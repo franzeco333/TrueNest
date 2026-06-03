@@ -102,29 +102,133 @@ and optionally detect the operating system language.
 
 # TrueNest en español
 
+![Logotipo de TrueNest](assets/logo/TrueNest.svg)
+
 **TrueNest** es una herramienta experimental de nesting real para flujos de corte láser. Está pensada para importar arte vectorial preparado desde SVG / Adobe Illustrator, acomodar figuras reales dentro de mesas de trabajo personalizadas y exportar SVG limpio compatible con RDWorks. Primero se está probando en Windows, con soporte para macOS planeado.
 
 > Estado actual: beta técnica. Todavía no es una versión final de producción.
 
-## Objetivo
+## Qué problema busca resolver TrueNest
 
-TrueNest busca resolver el nesting de figuras reales para corte láser:
+Muchos flujos de corte láser usan Illustrator, CorelDRAW, SVG, DXF, EPS u otros formatos vectoriales antes de importar los archivos en RDWorks. TrueNest busca convertirse en una herramienta liviana de nesting que pueda:
 
-- importar SVG;
-- detectar figuras cerradas;
-- detectar figuras compuestas con hoyos;
+- importar figuras vectoriales desde archivos SVG;
+- detectar figuras cerradas reales, incluyendo paths compuestos con hoyos;
 - diferenciar figuras y mesas de trabajo;
-- acomodar piezas dentro de mesas irregulares;
-- respetar separación entre figuras y márgenes;
-- exportar SVG limpio para RDWorks;
-- generar preview PNG y reporte TXT.
+- acomodar piezas dentro de mesas irregulares, no solo rectángulos;
+- respetar separación entre piezas y márgenes de la mesa;
+- exportar SVG limpio compatible con RDWorks;
+- generar una imagen PNG de vista previa;
+- generar un reporte TXT para dejar registro de la configuración usada.
+
+## Flujo actual
+
+```text
+Adobe Illustrator / editor vectorial
+→ exportar SVG
+→ TrueNest beta
+→ SVG limpio de salida
+→ RDWorks
+```
+
+## Funciones actuales de la beta
+
+La beta más reciente puede:
+
+- leer archivos SVG;
+- detectar colores usando las reglas de importación de TrueNest;
+- usar una mesa roja y figuras negras como convención temporal;
+- validar geometría real usando Shapely;
+- aplicar separación de 3 mm como 1,5 mm de expansión por figura y 1,5 mm de margen interno de mesa;
+- elegir una dirección inicial usando una cuadrícula 3x3;
+- usar prioridad horizontal, vertical, diagonal o comportamiento de centrado;
+- generar un SVG limpio para RDWorks;
+- generar un PNG preview;
+- generar un reporte TXT.
+
+## Requisitos para usar las betas actuales
+
+Los scripts actuales usan Python.
+
+### Usuarios de Windows 7
+
+Usar Python **3.8.10**.
+
+Página oficial de descarga:
+
+https://www.python.org/downloads/release/python-3810/
+
+Instaladores recomendados:
+
+- Windows 64 bits: `python-3.8.10-amd64.exe`
+- Windows 32 bits: `python-3.8.10.exe`
+
+Durante la instalación hay que activar:
+
+```text
+Add Python 3.8 to PATH
+```
+
+Si no se activa esa casilla, Windows puede mostrar un error parecido a:
+
+```text
+python no se reconoce como un comando interno o externo
+```
+
+### Dependencias
+
+La beta usa:
+
+```text
+shapely==1.8.5.post1
+svgpathtools==1.6.1
+Pillow==9.5.0
+```
+
+Los ZIP de prueba incluyen un archivo `.bat` para instalar esas dependencias automáticamente.
+
+## Plan de compatibilidad
+
+TrueNest está pensado como un solo proyecto con compilaciones separadas por plataforma:
+
+```text
+Versión Windows: planeada
+Versión macOS: planeada
+```
+
+La idea es mantener un solo repositorio y publicar versiones específicas para cada sistema en la sección de Releases de GitHub.
+
+## Idioma del programa
+
+El prototipo actual está principalmente en español. A futuro debería usar archivos de idioma como:
+
+```text
+locales/es.json
+locales/en.json
+```
+
+Así el programa podría detectar el idioma del sistema operativo o permitir elegir manualmente entre español e inglés.
+
+## Estado del proyecto
+
+TrueNest está en desarrollo activo. Las versiones actuales son pruebas técnicas para confirmar que el núcleo de geometría, la importación SVG, el nesting real y la exportación hacia RDWorks funcionan correctamente.
+
+Todavía faltan funciones importantes como:
+
+- interfaz final con tema oscuro;
+- miniaturas por figura;
+- asignación manual de Figura / Mesa de trabajo;
+- rotación inteligente;
+- orden de corte interno/externo;
+- compensación de grosor de corte láser / Offset polygon;
+- builds empaquetados para Windows y macOS.
 
 ## Créditos
 
-Created by / Creado por:
+Creado por:
 
 **Francisco Núñez Parra**
 
-Technical assistance and code generation support / Asistencia técnica y generación de código:
+Asistencia técnica y generación de código:
 
 **ChatGPT / OpenAI**
