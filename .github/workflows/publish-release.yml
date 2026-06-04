@@ -1,1 +1,38 @@
+name: Publish release
 
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare release notes
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          NOTES="docs/release-notes/${TAG}.md"
+
+          if [ -f "$NOTES" ]; then
+            cp "$NOTES" RELEASE_NOTES.md
+          else
+            echo "# TrueNest ${TAG}" > RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
+            echo "Release notes pending." >> RELEASE_NOTES.md
+          fi
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: RELEASE_NOTES.md
+          files: |
+            releases/*.zip
